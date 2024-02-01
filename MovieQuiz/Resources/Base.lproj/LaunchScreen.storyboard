@@ -16,17 +16,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="LaunchScreen" translatesAutoresizingMaskIntoConstraints="NO" id="o6A-L1-84E">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="Background" translatesAutoresizingMaskIntoConstraints="NO" id="iQR-QB-wfS">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="o6A-L1-84E" secondAttribute="trailing" id="Vh3-Op-XWe"/>
-                            <constraint firstItem="o6A-L1-84E" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="34" id="d4B-UH-8nW"/>
-                            <constraint firstItem="o6A-L1-84E" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="kpx-PT-EVa"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="o6A-L1-84E" secondAttribute="top" constant="59" id="ryg-Oo-yFO"/>
+                            <constraint firstAttribute="top" secondItem="iQR-QB-wfS" secondAttribute="top" id="DPd-aH-paw"/>
+                            <constraint firstAttribute="leading" secondItem="iQR-QB-wfS" secondAttribute="leading" id="Ryj-BT-5u8"/>
+                            <constraint firstAttribute="trailing" secondItem="iQR-QB-wfS" secondAttribute="trailing" id="bny-Kv-7uv"/>
+                            <constraint firstItem="iQR-QB-wfS" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="cqH-Ss-Jpq"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -36,6 +36,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchScreen" width="1125" height="2436"/>
+        <image name="Background" width="393" height="852"/>
     </resources>
 </document>
