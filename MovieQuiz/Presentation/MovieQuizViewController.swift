@@ -1,7 +1,9 @@
 import UIKit
 
 final class MovieQuizViewController: UIViewController {
-    @IBOutlet weak var questionLabel: UILabel!
+    @IBOutlet private var yesButton: UIButton!
+    @IBOutlet private var noButton: UIButton!
+    @IBOutlet private var questionLabel: UILabel!
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var textLabel: UILabel!
     @IBOutlet private var counterLabel: UILabel!
@@ -14,7 +16,6 @@ final class MovieQuizViewController: UIViewController {
     @IBAction private func noButtonClicked(_ sender: Any) {
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = false
-        
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
@@ -122,6 +123,10 @@ final class MovieQuizViewController: UIViewController {
     
     //Загрузка вью викторины с сбросом рамок
     private func show(quiz step: QuizStepViewModel) {
+        //активация кнопок
+        yesButton.isEnabled = true
+        noButton.isEnabled = true
+        
         imageView.image = step.image
         textLabel.text = step.question
         counterLabel.text = step.questionNumber
@@ -154,6 +159,13 @@ final class MovieQuizViewController: UIViewController {
        // метод красит рамку
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
+        
+        //деактивация кнопок
+        yesButton.isEnabled = false
+        noButton.isEnabled = false
+            //изменение цвета (так делают системные кнопки)
+        yesButton.setTitleColor(.ypGray, for: .disabled)
+        noButton.setTitleColor(.ypGray, for: .disabled)
         
         if isCorrect == true{
             imageView.layer.borderColor = UIColor.ypGreen.cgColor
