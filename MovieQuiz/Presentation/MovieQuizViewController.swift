@@ -26,22 +26,9 @@ final class MovieQuizViewController: UIViewController {
 
     private var currentQuestionIndex:Int = 0
     private var correctAnswers:Int = 0
-    //private let currentQuestion = questions[currentQuestionIndex]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //Интерлиниж текстового блока с повросом (В макете 26pt,но тут почему-то слишком большой разрыв получается)
-        /*
-        let attributedString = NSMutableAttributedString(string: "Your text goes here")
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 26
-        
-        attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedString.length))
-        
-        questionLabel.attributedText = attributedString
-        */
         
         let currentQuestion = questions[currentQuestionIndex]
         let questionStep = convert(model: currentQuestion)
@@ -90,27 +77,6 @@ final class MovieQuizViewController: UIViewController {
                 text: "Рейтинг этого фильма больше чем 6?",
                 correctAnswer: false)
         ]
-    
-    //Структура вопроса
-    struct QuizQuestion{
-        let image:String
-        let text:String
-        let correctAnswer:Bool
-    }
-    
-    //Вопрос показан
-    struct QuizStepViewModel{
-        let image:UIImage
-        let question:String
-        let questionNumber:String
-    }
-    
-    //Результат квиза
-    struct QuizResultsViewModel{
-        let title:String
-        let text:String
-        let buttonText:String
-    }
     
     //Конвертация View model
     private func convert(model:QuizQuestion)->QuizStepViewModel{
@@ -188,11 +154,6 @@ final class MovieQuizViewController: UIViewController {
                 text: text,
                 buttonText: "Сыграть ещё раз")
             show(quiz: viewModel)
-            /*
-             let currentQuestion = questions[currentQuestionIndex]
-             let questionStep = convert(model: currentQuestion)
-             show(quiz: questionStep)
-             */
             
         } else{
             currentQuestionIndex += 1
@@ -201,31 +162,9 @@ final class MovieQuizViewController: UIViewController {
             let viewModel = convert(model: nextQuestion)
             
             show(quiz: viewModel)
-//            imageView.layer.borderColor = nil
-//            imageView.layer.borderWidth = 0
-            
         }
     }
-    
-//    private func alertEndGame(){
-//        let alert = UIAlertController(
-//            title: "Этот раунд окончен!",
-//            message: "Ваш результат \(correctAnswers)",
-//            preferredStyle: .alert)
-//        
-//        let action = UIAlertAction(
-//            title: "Play again",
-//            style: .default){_ in
-//                self.currentQuestionIndex = 0
-//                self.correctAnswers = 0
-//                
-//                let restart = self.questions[self.currentQuestionIndex]
-//                let viewModel = self.convert(model: restart)
-//                self.show(quiz: viewModel)
-//            }
-//        alert.addAction(action)
-//        self.present(alert,animated:true,completion: nil)
-//    }
+
     private func borderReset(){
         //imageView.layer.masksToBounds = false\
         imageView.layer.borderWidth = 0
