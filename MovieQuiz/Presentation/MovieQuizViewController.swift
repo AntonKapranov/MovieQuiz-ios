@@ -1,6 +1,8 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
+
+    
     @IBOutlet private var yesButton: UIButton!
     @IBOutlet private var noButton: UIButton!
     @IBOutlet private var questionLabel: UILabel!
@@ -31,22 +33,34 @@ final class MovieQuizViewController: UIViewController {
     private var currentQuestionIndex:Int = 0
     private var correctAnswers:Int = 0
     private let questionsAmount: Int = 10
-    private var questionFactory: QuestionFactory = QuestionFactory()
+    private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var text:String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //let currentQuestion = questions[currentQuestionIndex]
-        if let firstQuestion = questionFactory.requestNextQuestion() {
-            currentQuestion = firstQuestion
-            let viewModel = convert(model: firstQuestion)
-            show(quiz: viewModel)
+        let questionFactory = QuestionFactory()
+        questionFactory.setup(delegate: self)
+        questionFactory.requestNextQuestion()
+    }
+    
+    
+    private func borderReset(){
+        //imageView.layer.masksToBounds = false\
+        imageView.layer.borderWidth = 0
+    }
+    
+    // MARK: - QuestionFactoryDelegate
+    func didReceiveNextQuestion(question: QuizQuestion?) {
+        guard let question = question else {
+                return
+            }
+
+            currentQuestion = question
+            let viewModel = convert(model: question)
+            DispatchQueue.main.async { [weak self] in
+            self?.show(quiz: viewModel)
         }
-        
-        //let questionStep = convert(model: currentQuestion)
-        //show(quiz: questionStep)
     }
     
     //Конвертация View model
@@ -82,16 +96,13 @@ final class MovieQuizViewController: UIViewController {
         {_ in
             self.currentQuestionIndex = 0
             self.correctAnswers = 0
-            
-            if let firstQuestion = self.questionFactory.requestNextQuestion() {
-                self.currentQuestion = firstQuestion
-                let viewModel = self.convert(model: firstQuestion)
-
-                self.show(quiz: viewModel)
-            }
-            //let question = self.questions[self.currentQuestionIndex]
-            //let viewModel = self.convert(model: question)
-            //self.show(quiz: viewModel)
+            self.questionFactory?.requestNextQuestion()
+//            if let firstQuestion = self.questionFactory?.requestNextQuestion() {
+//                self.currentQuestion = firstQuestion
+//                let viewModel = self.convert(model: firstQuestion)
+//
+//                self.show(quiz: viewModel)
+//            }
         }
         
         alert.addAction(action)
@@ -121,33 +132,7 @@ final class MovieQuizViewController: UIViewController {
             self.showNextQuestionOrResults()
         }
     }
-    /* //yandere simulator – if else зло
-    private func showNextQuestionOrResults(){
-        if currentQuestionIndex + 1 == questionsAmount {
-            //Alert
-            if correctAnswers == questionsAmount{
-                let text = "Поздравляем, вы ответили на 10 из 10!"
-            } else{
-                let text = "Вы ответили на \(correctAnswers) из 10, попробуйте ещё раз!"
-            }
-            let text = "Ваш результат: \(correctAnswers)/10"
-            let viewModel = QuizResultsViewModel(
-                title: "Игра окончена",
-                text: text,
-                buttonText: "Сыграть ещё раз")
-            show(quiz: viewModel)
-            
-        } else{
-            currentQuestionIndex += 1
-            
-            if let nextQuestion = questionFactory.requestNextQuestion() {
-                currentQuestion = nextQuestion
-                let viewModel = convert(model: nextQuestion)
 
-                show(quiz: viewModel)
-            }
-        }
-     */
     private func showNextQuestionOrResults(){
         //собрал через case. Считаю что так лучше. Мало-ли нужен будет алерт на 1/10
         switch correctAnswers {
@@ -164,18 +149,8 @@ final class MovieQuizViewController: UIViewController {
             show(quiz: viewModel)
         } else{
             currentQuestionIndex += 1
-            if let nextQuestion = questionFactory.requestNextQuestion() {
-                currentQuestion = nextQuestion
-                let viewModel = convert(model: nextQuestion)
-                
-                show(quiz: viewModel)
-            }
+            questionFactory?.requestNextQuestion()
         }
         
-    }
-
-    private func borderReset(){
-        //imageView.layer.masksToBounds = false\
-        imageView.layer.borderWidth = 0
     }
 }
