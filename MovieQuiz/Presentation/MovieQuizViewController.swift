@@ -31,18 +31,6 @@ final class MovieQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //Интерлиниж текстового блока с повросом (В макете 26pt,но тут почему-то слишком большой разрыв получается)
-        /*
-        let attributedString = NSMutableAttributedString(string: "Your text goes here")
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 26
-        
-        attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedString.length))
-        
-        questionLabel.attributedText = attributedString
-        */
-        
         let currentQuestion = questions[currentQuestionIndex]
         let questionStep = convert(model: currentQuestion)
         show(quiz: questionStep)
@@ -188,11 +176,6 @@ final class MovieQuizViewController: UIViewController {
                 text: text,
                 buttonText: "Сыграть ещё раз")
             show(quiz: viewModel)
-            /*
-             let currentQuestion = questions[currentQuestionIndex]
-             let questionStep = convert(model: currentQuestion)
-             show(quiz: questionStep)
-             */
             
         } else{
             currentQuestionIndex += 1
@@ -201,33 +184,10 @@ final class MovieQuizViewController: UIViewController {
             let viewModel = convert(model: nextQuestion)
             
             show(quiz: viewModel)
-//            imageView.layer.borderColor = nil
-//            imageView.layer.borderWidth = 0
-            
         }
     }
     
-//    private func alertEndGame(){
-//        let alert = UIAlertController(
-//            title: "Этот раунд окончен!",
-//            message: "Ваш результат \(correctAnswers)",
-//            preferredStyle: .alert)
-//        
-//        let action = UIAlertAction(
-//            title: "Play again",
-//            style: .default){_ in
-//                self.currentQuestionIndex = 0
-//                self.correctAnswers = 0
-//                
-//                let restart = self.questions[self.currentQuestionIndex]
-//                let viewModel = self.convert(model: restart)
-//                self.show(quiz: viewModel)
-//            }
-//        alert.addAction(action)
-//        self.present(alert,animated:true,completion: nil)
-//    }
     private func borderReset(){
-        //imageView.layer.masksToBounds = false\
         imageView.layer.borderWidth = 0
     }
 }
