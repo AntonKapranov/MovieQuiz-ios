@@ -8,13 +8,13 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private var textLabel: UILabel!
     @IBOutlet private var counterLabel: UILabel!
     @IBAction private func yesButtonClicked(_ sender: Any) {
-        let currentQuestion = questions[currentQuestionIndex]
+        guard let currentQuestion = currentQuestion else{return}
         let givenAnswer = true
         
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     @IBAction private func noButtonClicked(_ sender: Any) {
-        let currentQuestion = questions[currentQuestionIndex]
+        guard let currentQuestion = currentQuestion else{return}
         let givenAnswer = false
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
@@ -28,15 +28,18 @@ final class MovieQuizViewController: UIViewController {
     private var correctAnswers:Int = 0
     private let questionsAmount:Int = 10
     private var questionFactory:QuestionFactory = QuestionFactory()
-    private var qurentQuestion: QuizQuestion?
+    private var currentQuestion: QuizQuestion?
+    private var text:String = "" //Текст для Алерта
     //private let currentQuestion = questions[currentQuestionIndex]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let currentQuestion = questions[currentQuestionIndex]
-        let questionStep = convert(model: currentQuestion)
-        show(quiz: questionStep)
+        if let firstQuestion = questionFactory.requestNextQuestion() {
+            currentQuestion = firstQuestion
+            let viewModel = convert(model: firstQuestion)
+            show(quiz: viewModel)
+        }
     }
     
     //Конвертация View model
@@ -44,7 +47,7 @@ final class MovieQuizViewController: UIViewController {
         let questionStep = QuizStepViewModel(
             image: UIImage(named:model.image) ?? UIImage(),
             question: model.text,
-            questionNumber: "\(currentQuestionIndex + 1)/\(questions.count)")
+            questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
         return questionStep
     }
     
@@ -73,9 +76,12 @@ final class MovieQuizViewController: UIViewController {
             self.currentQuestionIndex = 0
             self.correctAnswers = 0
             
-            let question = self.questions[self.currentQuestionIndex]
-            let viewModel = self.convert(model: question)
-            self.show(quiz: viewModel)
+            if let firstQuestion = self.questionFactory.requestNextQuestion(){
+                self.currentQuestion = firstQuestion
+                let viewModel = self.convert(model: firstQuestion)
+                
+                self.show(quiz: viewModel)
+            }
         }
         
         alert.addAction(action)
@@ -107,25 +113,30 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func showNextQuestionOrResults(){
-        if currentQuestionIndex == questions.count - 1 {
-            //Alert
-            let text = "Ваш результат: \(correctAnswers)/10"
+        switch correctAnswers{
+        case questionsAmount:
+            text = "Поздравляем, вы ответили на 10 из 10!"
+        default:
+            text = "Вы ответили на \(correctAnswers) из 10, попробуйте ещё раз!"
+        }
+        
+        if currentQuestionIndex + 1 == questionsAmount{
             let viewModel = QuizResultsViewModel(
                 title: "Игра окончена",
                 text: text,
                 buttonText: "Сыграть ещё раз")
             show(quiz: viewModel)
-            
         } else{
             currentQuestionIndex += 1
-            
-            let nextQuestion = questions[currentQuestionIndex]
-            let viewModel = convert(model: nextQuestion)
-            
-            show(quiz: viewModel)
+            if let nextQuestion = questionFactory.requestNextQuestion() {
+                currentQuestion = nextQuestion
+                let viewModel = convert(model: nextQuestion)
+
+                show(quiz: viewModel)
+            }
         }
+        
     }
-    
     private func borderReset(){
         imageView.layer.borderWidth = 0
     }
