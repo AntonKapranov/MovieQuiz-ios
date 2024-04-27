@@ -29,11 +29,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private let questionsAmount:Int = 10
     private var questionFactory:QuestionFactory = QuestionFactory()
     private var currentQuestion: QuizQuestion?
+    private var alertPresenter: AlertPresenter?
     private var text:String = "" //Текст для Алерта
     //private let currentQuestion = questions[currentQuestionIndex]
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        alertPresenter = AlertPresenter(delegate: self)
         let questionFactory = QuestionFactory()
         questionFactory.setup(delegate: self)
         self.questionFactory = questionFactory
@@ -128,11 +130,23 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
         
         if currentQuestionIndex + 1 == questionsAmount{
-            let viewModel = QuizResultsViewModel(
-                title: "Игра окончена",
-                text: text,
-                buttonText: "Сыграть ещё раз")
-            show(quiz: viewModel)
+            let alertModel = AlertModel(
+                            title: "Этот раунд окончен!",
+                            message: text,
+                            buttonText: "Сыграть еще раз",
+                            completion: { [weak self] in
+                            guard let self else { return }
+                            self.currentQuestionIndex = 0
+                            self.correctAnswers = 0
+                            borderReset()
+                            questionFactory.requestNextQuestion()
+                        })
+            alertPresenter?.presentAlert(alert: alertModel)
+//            let viewModel = QuizResultsViewModel(
+//                title: "Игра окончена",
+//                text: text,
+//                buttonText: "Сыграть ещё раз")
+//            show(quiz: viewModel)
         } else{
             currentQuestionIndex += 1
             questionFactory.requestNextQuestion()
