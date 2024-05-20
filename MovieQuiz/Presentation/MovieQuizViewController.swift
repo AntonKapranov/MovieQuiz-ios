@@ -23,7 +23,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-
+    
+    private let statisticService = StatisticServiceImplementation()
     private var currentQuestionIndex:Int = 0
     private var correctAnswers:Int = 0
     private let questionsAmount:Int = 10
@@ -35,6 +36,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+//        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!)
+        print(NSHomeDirectory())
         alertPresenter = AlertPresenter(delegate: self)
         let questionFactory = QuestionFactory()
         questionFactory.setup(delegate: self)
