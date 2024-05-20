@@ -85,11 +85,11 @@
 		76DEE7432BA285F200C402BB /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				761887602BFACB5300BD8FD8 /* StatisticServiceImplementation.swift */,
 				76DEE7442BA2861900C402BB /* QuestionFactory.swift */,
 				76DEE74D2BA3B16600C402BB /* QuestionFactoryProtocol.swift */,
 				76DEE74F2BA3BB4800C402BB /* QuestionFactoryDelegate.swift */,
 				763E641B2BDC735F00EF72B8 /* AlertPresentorProtocol.swift */,
+				761887602BFACB5300BD8FD8 /* StatisticServiceImplementation.swift */,
 				7618875C2BFAC5F700BD8FD8 /* StatisticServiceProtocol.swift */,
 			);
 			path = Services;
@@ -110,8 +110,8 @@
 		8F4738322848DE2A005DF65E /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				AD1ABAB52831907B00B3E448 /* MovieQuizViewController.swift */,
 				AD1ABAB72831907B00B3E448 /* Main.storyboard */,
+				AD1ABAB52831907B00B3E448 /* MovieQuizViewController.swift */,
 				763E64172BDC4AE900EF72B8 /* AlertPresenter.swift */,
 			);
 			path = Presentation;
