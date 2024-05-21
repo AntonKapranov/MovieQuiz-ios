@@ -1,6 +1,9 @@
 import UIKit
 
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
+    
+    // MARK: - IBOutlet
+    
     @IBOutlet private var yesButton: UIButton!
     @IBOutlet private var noButton: UIButton!
     @IBOutlet private var questionLabel: UILabel!
@@ -8,23 +11,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet private var textLabel: UILabel!
     @IBOutlet private var counterLabel: UILabel!
     
-    @IBAction private func yesButtonClicked(_ sender: Any) {
-        guard let currentQuestion = currentQuestion else { return }
-        let givenAnswer = true
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
-    }
+    // MARK: - Private Properties
     
-    @IBAction private func noButtonClicked(_ sender: Any) {
-        guard let currentQuestion = currentQuestion else { return }
-        let givenAnswer = false
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
-    //мб загружать сюда значения из user defaults?
     private let statisticService: StatisticServiceProtocol = StatisticServiceImplementation()
     private var currentQuestionIndex: Int = 0
     private var correctAnswers: Int = 0
@@ -34,9 +22,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var alertPresenter: AlertPresenter?
     private var text: String = "" // Текст для алерта
     
+    // MARK: - UIViewController
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    // MARK: - UIViewController(*)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(NSHomeDirectory())
         alertPresenter = AlertPresenter(delegate: self)
         let questionFactory = QuestionFactory()
         questionFactory.setup(delegate: self)
@@ -44,7 +39,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         questionFactory.requestNextQuestion()
     }
     
-    // MARK: - QuestionFactoryDelegate.
+    // MARK: - QuestionFactoryDelegate
+    
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question = question else { return }
         currentQuestion = question
@@ -54,13 +50,15 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
     }
     
+    // MARK: - Private Methods
+    
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        let questionStep = QuizStepViewModel(
+        QuizStepViewModel(
             image: UIImage(named: model.image) ?? UIImage(),
             question: model.text,
             questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
-        return questionStep
     }
+
     
     private func show(quiz step: QuizStepViewModel) {
         yesButton.isEnabled = true
@@ -115,7 +113,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         if currentQuestionIndex + 1 == questionsAmount {
             statisticService.store(correct: correctAnswers, total: questionsAmount)
             
-            //загрузка из UserDefaults
+            //загружать из UserDefaults
             let gamesCount = statisticService.gamesCount
             let totalAccuracy = statisticService.totalAccuracy
             let bestGame = statisticService.bestGame
@@ -159,5 +157,19 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func borderReset() {
         imageView.layer.borderWidth = 0
+    }
+    
+    // MARK: - IBAction
+    
+    @IBAction private func yesButtonClicked(_ sender: Any) {
+        guard let currentQuestion = currentQuestion else { return }
+        let givenAnswer = true
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+    }
+    
+    @IBAction private func noButtonClicked(_ sender: Any) {
+        guard let currentQuestion = currentQuestion else { return }
+        let givenAnswer = false
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
 }
