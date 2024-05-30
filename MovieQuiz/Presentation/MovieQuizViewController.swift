@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
+final class MovieQuizViewController: UIViewController {
     
     // MARK: - IBOutlet
     
@@ -10,13 +10,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var textLabel: UILabel!
     @IBOutlet private var counterLabel: UILabel!
-    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     // MARK: - Private Properties
     
-    let presenter = MovieQuizPresenter()
+    var presenter: MovieQuizPresenter!
     var statisticService: StatisticServiceProtocol = StatisticServiceImplementation()
-    var questionFactory: QuestionFactoryProtocol?
     var alertPresenter: AlertPresenter?
     var text: String = "" // Текст для алерта
     
@@ -28,53 +27,32 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter.viewController = self
+        presenter = MovieQuizPresenter(viewController: self)
         imageView.layer.cornerRadius = 20
-        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         statisticService = StatisticServiceImplementation()
         alertPresenter = AlertPresenter(delegate: self)
         showLoadingIndicator()
-        questionFactory?.loadData()
         DispatchQueue.main.async {
             self.borderReset()
         }
     }
-    
-    // MARK: - QuestionFactoryDelegate
-    
-    func didReceiveNextQuestion(question: QuizQuestion?) {
-        presenter.didReceiveNextQuestion(question: question)
-    }
-    
-    func didLoadDataFromServer() {
-        DispatchQueue.main.async { [weak self] in
-            self?.activityIndicator.isHidden = true
-            self?.questionFactory?.requestNextQuestion()
-            self?.borderReset()
-        }
-    }
-    
-    func didFailToLoadData(with error: Error) {
-        DispatchQueue.main.async { [weak self] in
-            self?.showNetworkError(message: error.localizedDescription)
-        }
-    }
-    
+
     // MARK: - Private Methods
     
-    private func showLoadingIndicator() {
+    func showLoadingIndicator() {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
     }
     
-    private func showNetworkError(message: String) {
+    
+    func showNetworkError(message: String) {
         let model = AlertModel(title: "Ошибка",
                                message: message,
                                buttonText: "Попробовать еще раз") { [weak self] in
             guard let self = self else { return }
             
             self.presenter.restartGame()
-            self.questionFactory?.requestNextQuestion()
+            self.presenter.showNextQuestionOrResults()
         }
         
         alertPresenter?.presentAlert(alert: model)
@@ -133,7 +111,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
     }
     
-    private func borderReset() {
+    func borderReset() {
         imageView.layer.borderWidth = 0
     }
     
