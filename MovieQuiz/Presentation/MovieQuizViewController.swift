@@ -14,11 +14,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     // MARK: - Private Properties
     
+    private let presenter = MovieQuizPresenter()
     private var statisticService: StatisticServiceProtocol = StatisticServiceImplementation()
-    private var currentQuestionIndex: Int = 0
     private var correctAnswers: Int = 0
     private var isAnswerProcessing = false
-    private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var alertPresenter: AlertPresenter?
@@ -49,7 +48,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let question = question else { return }
         
         currentQuestion = question
-        let viewModel = convert(model: question)
+        let viewModel = presenter.convert(model: question)
         DispatchQueue.main.async { [weak self] in
             self?.showQuestion(quiz: viewModel)
         }
@@ -82,7 +81,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                                buttonText: "Попробовать еще раз") { [weak self] in
             guard let self = self else { return }
             
-            self.currentQuestionIndex = 0
+            self.presenter.resetQuestionIndex()
             self.correctAnswers = 0
             
             self.questionFactory?.requestNextQuestion()
@@ -91,12 +90,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         alertPresenter?.presentAlert(alert: model)
     }
     
-    private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        return QuizStepViewModel(
-            image: UIImage(data: model.image) ?? UIImage(),
-            question: model.text,
-            questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
-    }
     
     private func showQuestion(quiz step: QuizStepViewModel) {
         questionLabel.text = step.question
@@ -118,7 +111,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         let action = UIAlertAction(
             title: result.buttonText,
             style: .default) { _ in
-                self.currentQuestionIndex = 0
+                self.presenter.resetQuestionIndex()
                 self.correctAnswers = 0
                 self.questionFactory?.requestNextQuestion()
             }
@@ -151,9 +144,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     private func showNextQuestionOrResults() {
-        DispatchQueue.main.async {
-            if self.currentQuestionIndex + 1 == self.questionsAmount {
-                self.statisticService.store(correct: self.correctAnswers, total: self.questionsAmount)
+        DispatchQueue.main.async { [self] in
+            if presenter.isLastQuestion() {
+                statisticService.store(correct: correctAnswers, total: presenter.questionsAmount)
                 
                 // загружать из UserDefaults
                 let gamesCount = self.statisticService.gamesCount
@@ -161,10 +154,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 let bestGame = self.statisticService.bestGame
                 let bestGameTotal = bestGame.total
                 let bestGameDate = bestGame.date.dateTimeString
-                
                 let extraInfo:String = """
                 \n
-                Ваш результат: \(self.correctAnswers) из \(self.questionsAmount)
+                Ваш результат: \(self.correctAnswers) из \(presenter.questionsAmount)
                 Количество сыграных квизов: \(gamesCount)
                 Рекорд: \(bestGame.correct)/\(bestGameTotal) (\(bestGameDate))
                 Средняя точность: \(String(format: "%.2f", totalAccuracy))%
@@ -180,7 +172,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 )
                 self.showResult(quiz: resultModel)
             } else {
-                self.currentQuestionIndex += 1
+                self.presenter.switchToNextQuestion()
                 self.questionFactory?.requestNextQuestion()
             }
         }
