@@ -14,13 +14,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     // MARK: - Private Properties
     
-    private let presenter = MovieQuizPresenter()
-    private var statisticService: StatisticServiceProtocol = StatisticServiceImplementation()
-    private var correctAnswers: Int = 0
-    private var questionFactory: QuestionFactoryProtocol?
-    private var alertPresenter: AlertPresenter?
-    private var text: String = "" // Текст для алерта
-    private var currentQuestion: QuizQuestion? // <-- Added this line
+    let presenter = MovieQuizPresenter()
+    var statisticService: StatisticServiceProtocol = StatisticServiceImplementation()
+    var correctAnswers: Int = 0
+    var questionFactory: QuestionFactoryProtocol?
+    var alertPresenter: AlertPresenter?
+    var text: String = "" // Текст для алерта
     
     // MARK: - UIViewController
     
@@ -44,14 +43,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - QuestionFactoryDelegate
     
     func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question = question else { return }
-        
-        currentQuestion = question
-        presenter.currentQuestion = question
-        let viewModel = presenter.convert(model: question)
-        DispatchQueue.main.async { [weak self] in
-            self?.showQuestion(quiz: viewModel)
-        }
+        presenter.didReceiveNextQuestion(question: question)
     }
     
     func didLoadDataFromServer() {
@@ -90,7 +82,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         alertPresenter?.presentAlert(alert: model)
     }
     
-    private func showQuestion(quiz step: QuizStepViewModel) {
+    func showQuestion(quiz step: QuizStepViewModel) { // Removed 'private'
         questionLabel.text = step.question
         imageView.image = step.image
         counterLabel.text = step.questionNumber
@@ -101,7 +93,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         borderReset()
     }
     
-    private func showResult(quiz result: QuizResultsViewModel) {
+    func showResult(quiz result: QuizResultsViewModel) {
         let alert = UIAlertController(
             title: result.title,
             message: result.text,
@@ -139,42 +131,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.presenter.isAnswerProcessing = false
-            self.showNextQuestionOrResults()
-        }
-    }
-    
-    private func showNextQuestionOrResults() {
-        DispatchQueue.main.async { [self] in
-            if presenter.isLastQuestion() {
-                statisticService.store(correct: correctAnswers, total: presenter.questionsAmount)
-                
-                // загружать из UserDefaults
-                let gamesCount = statisticService.gamesCount
-                let totalAccuracy = statisticService.totalAccuracy
-                let bestGame = statisticService.bestGame
-                let bestGameTotal = bestGame.total
-                let bestGameDate = bestGame.date.dateTimeString
-                let extraInfo:String = """
-                \n
-                Ваш результат: \(correctAnswers) из \(presenter.questionsAmount)
-                Количество сыграных квизов: \(gamesCount)
-                Рекорд: \(bestGame.correct)/\(bestGameTotal) (\(bestGameDate))
-                Средняя точность: \(String(format: "%.2f", totalAccuracy))%
-                """
-                
-                text = "Этот раунд окончен!"
-                text += extraInfo
-                
-                let resultModel = QuizResultsViewModel(
-                    title: "Этот раунд окончен!",
-                    text: text,
-                    buttonText: "Сыграть еще раз"
-                )
-                showResult(quiz: resultModel)
-            } else {
-                presenter.switchToNextQuestion()
-                questionFactory?.requestNextQuestion()
-            }
+            self.presenter.showNextQuestionOrResults()
         }
     }
     
