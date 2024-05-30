@@ -29,26 +29,30 @@
                                 <rect key="frame" x="20" y="69" width="353" height="749"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ffs-GB-Ydg" userLabel="Stack Labels">
-                                        <rect key="frame" x="0.0" y="0.0" width="353" height="23.333333333333332"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="353" height="23.666666666666668"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="252" text="Вопрос:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Gs-Uq-DR2">
-                                                <rect key="frame" x="0.0" y="0.0" width="76" height="23.333333333333332"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="71.666666666666671" height="23.666666666666668"/>
                                                 <fontDescription key="fontDescription" name="YSDisplay-Medium" family="YS Display" pointSize="20"/>
                                                 <color key="textColor" name="YP White"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1/10" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="51U-Sv-Oq3">
-                                                <rect key="frame" x="76" y="0.0" width="277" height="23.333333333333332"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1/10" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="51U-Sv-Oq3" userLabel="questionLabel">
+                                                <rect key="frame" x="71.666666666666657" y="0.0" width="281.33333333333337" height="23.666666666666668"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="Index" label="Index"/>
                                                 <fontDescription key="fontDescription" name="YSDisplay-Medium" family="YS Display" pointSize="20"/>
                                                 <color key="textColor" name="YP White"/>
                                                 <nil key="highlightedColor"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifie" value="Index"/>
+                                                </userDefinedRuntimeAttributes>
                                             </label>
                                         </subviews>
                                     </stackView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1AD-aQ-rkT" userLabel="Main picture">
-                                        <rect key="frame" x="0.0" y="43.333333333333314" width="353" height="529.66666666666674"/>
+                                        <rect key="frame" x="0.0" y="43.666666666666686" width="353" height="529.66666666666652"/>
                                         <color key="backgroundColor" name="YP Black"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Poster"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Poster" label="Poster"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="1AD-aQ-rkT" secondAttribute="height" multiplier="2:3" id="ege-SA-25V"/>
                                         </constraints>
@@ -59,7 +63,8 @@
                                         </userDefinedRuntimeAttributes>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Рейтинг этого фильма больше, чем 5?" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" preferredMaxLayoutWidth="251" translatesAutoresizingMaskIntoConstraints="NO" id="WKw-ZN-P3f">
-                                        <rect key="frame" x="0.0" y="593" width="353" height="76"/>
+                                        <rect key="frame" x="0.0" y="593.33333333333337" width="353" height="75.666666666666629"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Question Text" label="Question Text"/>
                                         <fontDescription key="fontDescription" name="YSDisplay-Bold" family="YS Display" pointSize="23"/>
                                         <color key="textColor" name="YP White"/>
                                         <nil key="highlightedColor"/>
@@ -67,9 +72,10 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="p7K-u2-Mbg" userLabel="Stack Buttons">
                                         <rect key="frame" x="0.0" y="689" width="353" height="60"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4AE-Cq-tUX">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4AE-Cq-tUX" userLabel="No">
                                                 <rect key="frame" x="0.0" y="0.0" width="166.66666666666666" height="60"/>
                                                 <color key="backgroundColor" name="YP White"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="No" label="No"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="60" id="OwE-Ds-8Ce"/>
                                                 </constraints>
@@ -83,15 +89,16 @@
                                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifie" value="No"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="noButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CTn-i8-sVu"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TqD-RO-Qb4">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TqD-RO-Qb4" userLabel="Yes">
                                                 <rect key="frame" x="186.66666666666663" y="0.0" width="166.33333333333337" height="60"/>
                                                 <color key="backgroundColor" name="YP White"/>
-                                                <accessibility key="accessibilityConfiguration" identifier="Yes"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="Yes" label="Yes"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="60" id="SML-wc-7BU"/>
                                                 </constraints>
@@ -105,6 +112,7 @@
                                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifie" value="Yes"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="yesButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="SdM-3L-UfI"/>

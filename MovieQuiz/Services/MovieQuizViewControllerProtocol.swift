@@ -1,5 +1,3 @@
-import Foundation
-
 protocol MovieQuizViewControllerProtocol: AnyObject {
     func show(quiz step: QuizStepViewModel)
     func show(quiz result: QuizResultsViewModel)
@@ -7,6 +5,6 @@ protocol MovieQuizViewControllerProtocol: AnyObject {
     func showLoadingIndicator()
     func hideLoadingIndicator()
     func showNetworkError(message: String)
-    func updateButtonState(isEnabled: Bool)
-    func showAlert(model: AlertModel)
+    func lockButtons(_ :Bool)
+    func borderReset()
 }
