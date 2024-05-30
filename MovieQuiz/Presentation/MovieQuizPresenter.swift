@@ -6,13 +6,15 @@ final class MovieQuizPresenter {
     var isAnswerProcessing = false
     let questionsAmount: Int = 10
     private var currentQuestionIndex: Int = 0
+    private var correctAnswers: Int = 0
     
     func isLastQuestion() -> Bool {
         currentQuestionIndex == questionsAmount - 1
     }
     
-    func resetQuestionIndex() {
+    func restartGame() {
         currentQuestionIndex = 0
+        correctAnswers = 0
     }
     
     func switchToNextQuestion() {
@@ -34,6 +36,12 @@ final class MovieQuizPresenter {
         viewController?.showQuestion(quiz: viewModel)
     }
     
+    func didAnswer(isCorrectAnswer: Bool) {
+        if isCorrectAnswer {
+            correctAnswers += 1
+        }
+    }
+    
     func yesButtonClicked() {
         guard !isAnswerProcessing, let currentQuestion = currentQuestion else { return }
         let givenAnswer = true
@@ -48,7 +56,7 @@ final class MovieQuizPresenter {
     
     func showNextQuestionOrResults() {
         if isLastQuestion() {
-            viewController?.statisticService.store(correct: viewController?.correctAnswers ?? 0, total: questionsAmount)
+            viewController?.statisticService.store(correct: correctAnswers, total: questionsAmount)
             
             // Load from UserDefaults
             let gamesCount = viewController?.statisticService.gamesCount ?? 0
@@ -56,7 +64,6 @@ final class MovieQuizPresenter {
             let bestGame = viewController?.statisticService.bestGame
             let bestGameTotal = bestGame?.total ?? 0
             let bestGameDate = bestGame?.date.dateTimeString ?? ""
-            let correctAnswers = viewController?.correctAnswers ?? 0
             let extraInfo: String = """
             \n
             Ваш результат: \(correctAnswers) из \(questionsAmount)
