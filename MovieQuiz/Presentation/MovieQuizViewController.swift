@@ -15,7 +15,6 @@ final class MovieQuizViewController: UIViewController {
     // MARK: - Private Properties
     
     var presenter: MovieQuizPresenter!
-    var statisticService: StatisticServiceProtocol = StatisticServiceImplementation()
     var alertPresenter: AlertPresenter?
     var text: String = "" // Текст для алерта
     
@@ -29,7 +28,7 @@ final class MovieQuizViewController: UIViewController {
         super.viewDidLoad()
         presenter = MovieQuizPresenter(viewController: self)
         imageView.layer.cornerRadius = 20
-        statisticService = StatisticServiceImplementation()
+//        statisticService = StatisticServiceImplementation()
         alertPresenter = AlertPresenter(delegate: self)
         showLoadingIndicator()
         DispatchQueue.main.async {

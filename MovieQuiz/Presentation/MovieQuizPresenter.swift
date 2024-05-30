@@ -1,7 +1,8 @@
 import UIKit
 
 final class MovieQuizPresenter: QuestionFactoryDelegate {
-    weak var viewController: MovieQuizViewController?
+    private weak var viewController: MovieQuizViewController?
+    var statisticService: StatisticServiceProtocol = StatisticServiceImplementation()
     var currentQuestion: QuizQuestion?
     var isAnswerProcessing = false
     let questionsAmount: Int = 10
@@ -13,8 +14,26 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         self.viewController = viewController
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         questionFactory?.loadData()
+        statisticService = StatisticServiceImplementation()
     }
 
+    func makeResultsMessage() -> String{
+        statisticService.store(correct: correctAnswers, total: questionsAmount)
+        let bestGame = statisticService.bestGame
+                
+        let totalPlaysCountLine = "Количество сыгранных квизов: \(statisticService.gamesCount)"
+        let currentGameResultLine = "Ваш результат: \(correctAnswers)\\\(questionsAmount)"
+        let bestGameInfoLine = "Рекорд: \(bestGame.correct)\\\(bestGame.total)"
+        + " (\(bestGame.date.dateTimeString))"
+        let averageAccuracyLine = "Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
+        
+        let resultMessage = [
+            currentGameResultLine, totalPlaysCountLine, bestGameInfoLine, averageAccuracyLine
+        ].joined(separator: "\n")
+        
+        return resultMessage
+    }
+    
     func isLastQuestion() -> Bool {
         currentQuestionIndex == questionsAmount - 1
     }
@@ -91,19 +110,19 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
 
     func showNextQuestionOrResults() {
         if isLastQuestion() {
-            viewController?.statisticService.store(correct: correctAnswers, total: questionsAmount)
+            statisticService.store(correct: correctAnswers, total: questionsAmount)
 
             // Load from UserDefaults
-            let gamesCount = viewController?.statisticService.gamesCount ?? 0
-            let totalAccuracy = viewController?.statisticService.totalAccuracy ?? 0.0
-            let bestGame = viewController?.statisticService.bestGame
-            let bestGameTotal = bestGame?.total ?? 0
-            let bestGameDate = bestGame?.date.dateTimeString ?? ""
+            let gamesCount = statisticService.gamesCount
+            let totalAccuracy = statisticService.totalAccuracy
+            let bestGame = statisticService.bestGame
+            let bestGameTotal = bestGame.total
+            let bestGameDate = bestGame.date.dateTimeString
             let extraInfo: String = """
             \n
             Ваш результат: \(correctAnswers) из \(questionsAmount)
             Количество сыграных квизов: \(gamesCount)
-            Рекорд: \(bestGame?.correct ?? 0)/\(bestGameTotal) (\(bestGameDate))
+            Рекорд: \(bestGame.correct)/\(bestGameTotal) (\(bestGameDate))
             Средняя точность: \(String(format: "%.2f", totalAccuracy))%
             """
 
