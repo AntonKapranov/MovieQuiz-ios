@@ -17,32 +17,43 @@ final class MovieQuizUITests:XCTestCase {
         app.terminate()
         app = nil
     }
+    //Test cases
     
-    //Проверка работы счётчика и кнопки "Да"
+    //Проверка нажатия кнопкт "Да" и смену счётчика вопросов на 2/10.
     func testYesButton() {
-        let targetValue:String = "2/10"
         
-        sleep(2)
-        app.buttons["Yes"].tap()
-        sleep(2)
-        XCTAssertEqual("2/10", targetValue)
-    }
-    
-    //Проверка работы счётчика и кнопки "Нет"
-    func testNoButton() {
-        let targetValue:String = "2/10"
-        
-        sleep(2)
-        app.buttons["No"].tap()
-        sleep(2)
-        XCTAssertEqual("2/10", targetValue)
-    }
-    
-    //Проверка срабатывания алерта в конце игры. Заголовок и кнопка должны соответствовать
-    func testAlertExistance() {
-//        let targetValue = "1/10"
         let targetalert = app.alerts["Этот раунд окончен!"]
-//        let targetAlertButton = app.buttons["Сыграть ещё раз"]
+        let indexLabel = app.staticTexts["Index"]
+        
+        sleep(4)
+        
+        app.buttons["Yes"].tap()
+        sleep(4)
+        
+        
+        
+        XCTAssertFalse(targetalert.exists)  //Проверяю, что алерта на экране нет.
+        XCTAssertEqual(indexLabel.label, "2/10") //Проверяю изменение счётчика.
+    }
+    
+    //Проверка нажатия кнопкт "Нет" и смену счётчика вопросов на 2/10.
+    func testNoButton() {
+        let targetalert = app.alerts["Этот раунд окончен!"]
+        let indexLabel = app.staticTexts["Index"]
+        
+        sleep(4)
+        
+        app.buttons["No"].tap()
+        sleep(4)
+        
+        XCTAssertFalse(targetalert.exists) //Проверяю, что алерта на экране нет.
+        XCTAssertEqual(indexLabel.label, "2/10") //Проверяю изменение счётчика.
+    }
+    
+    //Проверка появления алерта с нужным заголовком и нужной кнопкой.
+    func testAlertArrival() {
+        let targetalert = app.alerts["Этот раунд окончен!"]
+        let alertButton = "Сыграть ещё раз"
         
         for _ in 1...10 {
             sleep(2)
@@ -50,16 +61,16 @@ final class MovieQuizUITests:XCTestCase {
             sleep(2)
         }
         
-        XCTAssertTrue(targetalert.exists, "Alert has pop-up")
         sleep(2)
-        XCTAssertTrue(targetalert.exists, "Alert has pop-up")
-        sleep(1)
-        app.buttons["Сыграть ещё раз"].tap()
+        XCTAssertTrue(targetalert.exists) //Проверяю, что алерт есть на экране.
+        XCTAssertTrue(targetalert.buttons.firstMatch.label == alertButton) //Проверяю, что кнопка алерта соответствует ТЗ.
     }
     
-    //Повторный вызов алерта, проверка нажатия кнопки и сьроса счётчика
-    func testViewRestart() {
+    //Проверка отрабатывания кнопки алерта, исчезновения алерта и сброса счётчика вопросов на 1/10.
+    func testAlertDismiss() {
+        let indexLabel = app.staticTexts["Index"]
         let targetalert = app.alerts["Этот раунд окончен!"]
+        let alertButton = "Сыграть ещё раз"
         let targetValue = "1/10"
         
         for _ in 1...10 {
@@ -68,38 +79,15 @@ final class MovieQuizUITests:XCTestCase {
             sleep(2)
         }
         
-        XCTAssertTrue(targetalert.exists, "Alert has pop-up")
         sleep(2)
-        XCTAssertTrue(targetalert.exists, "Alert has pop-up")
+        XCTAssertTrue(targetalert.exists) //Проверяю, что алерт есть на экране.
         sleep(1)
-        app.buttons["Сыграть ещё раз"].tap()
+        app.buttons[alertButton].tap() //Отрабатываю нажатие кнопки на алерте.
         
-        sleep(1)
-        XCTAssertFalse(targetalert.exists, "Alert has pop-up")
-        XCTAssertEqual("1/10" ,targetValue )
+        sleep(2)
+        XCTAssertFalse(targetalert.exists) //Проверяю, что алерта на экране нет.
+        sleep(4)
+        XCTAssertEqual(indexLabel.label, targetValue) //Проверяю, что счётчик сбросился, и равен "1/10".
     }
 }
 
-
-/*
- let resultModel = QuizResultsViewModel(
-     title: "Этот раунд окончен!",
-     text: text,
-     buttonText: "Сыграть ещё раз"
- 
- 
- sleep(4)
-         let firstPoster = app.images["Poster"]
-         let firstPosterData = firstPoster.screenshot().pngRepresentation
-         
-         app.buttons["No"].tap()
-         sleep(4)
-         
-         let secondPoster = app.images["Poster"]
-         let secondPosterData = secondPoster.screenshot().pngRepresentation
-         
-         let indexLabel = app.staticTexts["Index"]
-         
-         XCTAssertEqual(indexLabel.label, "2/10")
-         XCTAssertNotEqual(firstPosterData, secondPosterData)
- */

@@ -39,7 +39,7 @@
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1/10" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="51U-Sv-Oq3" userLabel="questionLabel">
                                                 <rect key="frame" x="71.666666666666657" y="0.0" width="281.33333333333337" height="23.666666666666668"/>
-                                                <accessibility key="accessibilityConfiguration" identifier="Index" label="Index"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="Index"/>
                                                 <fontDescription key="fontDescription" name="YSDisplay-Medium" family="YS Display" pointSize="20"/>
                                                 <color key="textColor" name="YP White"/>
                                                 <nil key="highlightedColor"/>
